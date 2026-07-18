@@ -21,7 +21,7 @@ public class ConsumerInitialiser {
                             ReadOffset.latest(),
                             "consumer-workers");
         }catch(Exception e){
-            throw new ConsumerGroupAlreadyExists();
+            //throw new ConsumerGroupAlreadyExists();
         }
     }
 }

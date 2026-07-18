@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: worker-service
+  data:
+    redis:
+      host: localhost
+      port: 6379
