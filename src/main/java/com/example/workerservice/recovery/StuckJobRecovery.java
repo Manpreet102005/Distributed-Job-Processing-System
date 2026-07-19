@@ -3,17 +3,12 @@ package com.example.workerservice.recovery;
 import com.example.workerservice.consumer.JobConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Range;
-import org.springframework.data.redis.connection.BitFieldSubCommands;
-import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.PendingMessage;
 import org.springframework.data.redis.connection.stream.PendingMessages;
-import org.springframework.data.redis.connection.stream.ReadOffset;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-
 import java.time.Duration;
-import java.util.List;
 
 @Component
 public class StuckJobRecovery {
