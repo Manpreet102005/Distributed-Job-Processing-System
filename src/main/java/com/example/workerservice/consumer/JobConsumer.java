@@ -1,5 +1,6 @@
 package com.example.workerservice.consumer;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.*;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -14,6 +15,7 @@ public class JobConsumer {
     @Autowired
     private StringRedisTemplate redisTemplate;
 
+    @Getter
     private final String worker="worker-1";
 
     @Scheduled(fixedDelay = 1000)
@@ -26,9 +28,15 @@ public class JobConsumer {
                 );
         if(consumedJobs!=null){
             for(MapRecord<String,Object,Object> consumedJob:consumedJobs){
+
                 //only for testing , will process later
                 System.out.println("Consumed Job Id: "+consumedJob.getId());
                 System.out.println("Data:"+ consumedJob.getValue());
+                redisTemplate.opsForStream().acknowledge(
+                        "stream",
+                        "consumer-workers",
+                        consumedJob.getId()
+                );
             }
         }
     }
