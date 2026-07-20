@@ -9,6 +9,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class StuckJobRecovery {
@@ -17,6 +19,7 @@ public class StuckJobRecovery {
 
     @Autowired
     private JobConsumer jobConsumer;
+
 
     @Scheduled(fixedDelay = 30000)
     public void recoverStuckJobs(){
@@ -34,14 +37,40 @@ public class StuckJobRecovery {
             System.out.println("Total Delievery Count: "+pendingMessage.getTotalDeliveryCount());
             System.out.println("Elaped Time: "+pendingMessage.getElapsedTimeSinceLastDelivery());
             System.out.println("***********************************************");
-            redisTemplate.opsForStream().claim(
-                    "stream",
-                    "consumer-workers",
-                    jobConsumer.getWorker(),
-                    Duration.ofMillis(0),
-                    pendingMessage.getId()
-            );
-            System.out.println("Claimed Successfully");
+
+            if(pendingMessage.getElapsedTimeSinceLastDelivery().toMillis()>20000){
+                if(pendingMessage.getTotalDeliveryCount()>3){
+                    Map<String,String> deadJob=new HashMap<>();
+                    deadJob.put("jobId", pendingMessage.getIdAsString());
+                    //Add to Dead Stream
+                    redisTemplate.opsForStream().add(
+                            "dead-stream",
+                            deadJob
+                    );
+                    //Acknowledgement
+                    redisTemplate.opsForStream().acknowledge(
+                            "stream",
+                            "consumer-workers",
+                            pendingMessage.getId()
+                    );
+
+                    System.out.println("Moved to Dead Stream: "+pendingMessage.getIdAsString());
+
+                }
+                else{
+                    //Claim for retry
+                    redisTemplate.opsForStream().claim(
+                            "stream",
+                            "consumer-workers",
+                            jobConsumer.getWorker(),
+                            Duration.ofMillis(0),
+                            pendingMessage.getId()
+                    );
+                    System.out.println("Claimed for retry: "+pendingMessage.getIdAsString());
+                }
+            }
+
+
         }
     }
 }
