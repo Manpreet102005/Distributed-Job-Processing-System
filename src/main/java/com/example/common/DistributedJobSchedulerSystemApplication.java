@@ -1,4 +1,4 @@
-package com.example.distributed_job_scheduler_system;
+package com.example.common;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.example.distributed_job_scheduler_system;
+package com.example.common;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

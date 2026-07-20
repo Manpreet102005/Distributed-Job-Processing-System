@@ -1,4 +1,4 @@
-package com.example.distributed_job_scheduler_system.entity;
+package com.example.common.entity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

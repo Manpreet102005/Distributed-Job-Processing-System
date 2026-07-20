@@ -1,4 +1,4 @@
-package com.example.distributed_job_scheduler_system.entity;
+package com.example.common.entity;
 
 public enum JobStatus {
     PENDING,
